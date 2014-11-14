@@ -89,8 +89,10 @@ var getRandomVideo = function() {
 // Add Get Lucky button to global-header //
 ///////////////////////////////////////////
 
+
+
 var html = '';
-html += '<li id="rTab" class="nav-item-large nav-item">';
+html += '<li id="luck-flix" class="nav-item-large nav-item">';
 html += '<span class="i-b content">';
 html += '<a href="#" id="getLuckyBtn"><span class="icon-star"></span> Get Lucky</a>';
 html += '</span>';
