@@ -11,7 +11,8 @@
   "permissions": [],
   "content_scripts": [{
     "matches": ["*://*.netflix.com/WiHome"],
-    "js": ["contentscript.js"]
+    "js": ["contentscript.js"],
+    "run_at": "document_start"
   }],
   "web_accessible_resources": [
     "script.js"

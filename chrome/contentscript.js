@@ -7,10 +7,7 @@ function afterPageLoad() {
 	(document.head || document.documentElement).appendChild(s);
 }
 
-if (document.readyState == "complete") {
+
+window.addEventListener('DOMContentLoaded', function() {
 	afterPageLoad();
-} else {
-	window.addEventListener("load", function() {
-		setTimeout(afterPageLoad, 0);
-	});
-}
+});
