@@ -2,7 +2,7 @@
 // Firefox specific re-defines //
 /////////////////////////////////
 var netflix = unsafeWindow.netflix;
-var jQuery = $;
+var jQuery  = $;
 
 // Initialise
 var LOG = 'lucky-flix: ';
@@ -14,37 +14,37 @@ console.log(LOG, 'Initialising...');
 
 var videoList = [];
 
-var unique = function(a, compareFunc) {
-	a.sort(compareFunc);
-	for (var i = 1; i < a.length;) {
-		if (compareFunc(a[i - 1], a[i]) === 0) {
-			a.splice(i, 1);
-		} else {
-			i++;
-		}
-	}
-	return a;
+var unique = function(a, compareFunc){
+    a.sort( compareFunc );
+    for(var i = 1; i < a.length; ){
+        if( compareFunc(a[i-1], a[i]) === 0){
+            a.splice(i, 1);
+        } else {
+            i++;
+        }
+    }
+    return a;
 };
 
-jQuery('.playLink').each(function(i, el) {
-	jqObj = jQuery(el);
-	var url = jqObj.attr('href').split('&')[0];
-	var title = jqObj.siblings('img').attr('alt');
+jQuery('.playLink').each(function(i, el){
+	jqObj       = jQuery(el);
+	var url     = jqObj.attr('href').split('&')[0];
+	var title   = jqObj.siblings('img').attr('alt');
 	var movieId = url.substr(url.length - 8);
 
 	videoList.push({
-		title: title,
-		url: url,
+		title: title, 
+		url: url, 
 		movieid: movieId
 	});
 });
 
-var uniqueList = unique(videoList, function(a, b) {
-	return (a.title > b.title ? 1 : (a.title < b.title ? -1 : 0));
+var uniqueList = unique(videoList, function(a,b){
+	return (a.title > b.title ? 1 : (a.title<b.title ? -1 : 0 ));
 });
 
 var randInt = function(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 //////////////////////////////////////////////////
@@ -67,22 +67,31 @@ var getRandomVideo = function() {
 
 		var el = jQuery('<div></div>');
 		el.html(data.html);
-
 		try {
 			var duration = jQuery('.duration', el).html().trim();
+			var rating   = jQuery('.mpaaRating', el).html().trim();
+			var year     = jQuery('.year', el).html().trim();
+			var img      = jQuery('.boxShotImg', el)[0].outerHTML;
 			console.log(LOG, 'Video [', randomVideo.title, duration, ']');
 			if (duration.indexOf('minutes') > 0) {
 				var durationInMins = Number(duration.match(/\d+/g)[0]);
 				if (durationInMins > 59) {
-					console.log(LOG, 'FILM!');
-					window.location.href = randomVideo.url;
+					$('#lucky-flix-popup-title').html(randomVideo.title);
+					$('#lucky-flix-popup-rating').html(rating);
+					$('#lucky-flix-popup-time').html(duration);
+					$('#lucky-flix-popup-year').html(year);
+					$('#lucky-flix-popup-thumbnail').html(img);
+					$('#lucky-flix-popup-button').click(function() {
+						window.location.href = randomVideo.url;
+					});
+					$('#lucky-flix-popup').popup('show');
 				} else {
 					getRandomVideo();
 				}
 			} else {
 				getRandomVideo();
 			}
-		} catch (e) {
+		} catch(e) {
 			getRandomVideo();
 		}
 
@@ -97,7 +106,7 @@ var getRandomVideo = function() {
 ///////////////////////////////////////////
 
 var html = '';
-html += '<li id="rTab" class="nav-item-large nav-item">';
+html += '<li id="luck-flix" class="nav-item-large nav-item">';
 html += '<span class="i-b content">';
 html += '<a href="#" id="getLuckyBtn"><span class="icon-star"></span> Get Lucky</a>';
 html += '</span>';
@@ -110,7 +119,29 @@ jQuery('#global-header').append(html);
 
 console.log(LOG, 'button added.');
 
-jQuery('#getLuckyBtn').on('click', function() {
+var modal = '';
+modal += '<div id="lucky-flix-popup">';
+modal += '<h2 id="lucky-flix-popup-title">' + 'MovieTitle' + '</h4>';
+modal += '<p id="lucky-flix-popup-thumbnail"></p>';
+modal += '<p>';
+modal += '<span id="lucky-flix-popup-year">' + '1900' + '</span>';
+modal += '    ';
+modal += '<span id="lucky-flix-popup-rating">' + '13' + '</span>';
+modal += '    ';
+modal += '<span id="lucky-flix-popup-time">' + '-500 minutes' + '</span>';
+modal += '</p>';
+modal += '<button id="lucky-flix-popup-button" style="width:100%; height: 50px">Watch It</button>';
+jQuery('body').append(modal);
+
+$('#lucky-flix-popup').popup();
+$('#lucky-flix-popup')
+	.css('width', '300px')
+	.css('padding', '20px')
+	.css('margin', '20px')
+	.css('text-align', 'center')
+	.css('background-color', 'white');
+
+jQuery('#getLuckyBtn').on('click', function(e) {
 	console.log(LOG, 'get lucky clicked.');
 	getRandomVideo();
 });

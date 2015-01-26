@@ -60,15 +60,24 @@ var getRandomVideo = function() {
 
 		var el = jQuery('<div></div>');
 		el.html(data.html);
-
 		try {
 			var duration = jQuery('.duration', el).html().trim();
+			var rating   = jQuery('.mpaaRating', el).html().trim();
+			var year     = jQuery('.year', el).html().trim();
+			var img      = jQuery('.boxShotImg', el)[0].outerHTML;
 			console.log(LOG, 'Video [', randomVideo.title, duration, ']');
 			if (duration.indexOf('minutes') > 0) {
 				var durationInMins = Number(duration.match(/\d+/g)[0]);
 				if (durationInMins > 59) {
-					console.log(LOG, 'FILM!');
-					window.location.href = randomVideo.url;
+					$('#lucky-flix-popup-title').html(randomVideo.title);
+					$('#lucky-flix-popup-rating').html(rating);
+					$('#lucky-flix-popup-time').html(duration);
+					$('#lucky-flix-popup-year').html(year);
+					$('#lucky-flix-popup-thumbnail').html(img);
+					$('#lucky-flix-popup-button').click(function() {
+						window.location.href = randomVideo.url;
+					});
+					$('#lucky-flix-popup').popup('show');
 				} else {
 					getRandomVideo();
 				}
@@ -89,8 +98,6 @@ var getRandomVideo = function() {
 // Add Get Lucky button to global-header //
 ///////////////////////////////////////////
 
-
-
 var html = '';
 html += '<li id="luck-flix" class="nav-item-large nav-item">';
 html += '<span class="i-b content">';
@@ -105,7 +112,29 @@ jQuery('#global-header').append(html);
 
 console.log(LOG, 'button added.');
 
-jQuery('#getLuckyBtn').on('click', function() {
-	console.log(LOG, 'get lucky clicked.');
+var modal = '';
+modal += '<div id="lucky-flix-popup">';
+modal += '<h2 id="lucky-flix-popup-title">' + 'MovieTitle' + '</h4>';
+modal += '<p id="lucky-flix-popup-thumbnail"></p>';
+modal += '<p>';
+modal += '<span id="lucky-flix-popup-year">' + '1900' + '</span>';
+modal += '    ';
+modal += '<span id="lucky-flix-popup-rating">' + '13' + '</span>';
+modal += '    ';
+modal += '<span id="lucky-flix-popup-time">' + '-500 minutes' + '</span>';
+modal += '</p>';
+modal += '<button id="lucky-flix-popup-button" style="width:100%; height: 50px">Watch It</button>';
+jQuery('body').append(modal);
+
+$('#lucky-flix-popup').popup();
+$('#lucky-flix-popup')
+	.css('width', '300px')
+	.css('padding', '20px')
+	.css('margin', '20px')
+	.css('text-align', 'center')
+	.css('background-color', 'white');
+
+jQuery('#getLuckyBtn').on('click', function(e) {
+	console.log(LOG, 'get lucky clicked.', e);
 	getRandomVideo();
 });
