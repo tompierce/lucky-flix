@@ -71,19 +71,25 @@ var getRandomVideo = function() {
 			var duration = jQuery('.duration', el).html().trim();
 			var rating   = jQuery('.mpaaRating', el).html().trim();
 			var year     = jQuery('.year', el).html().trim();
-			var img      = jQuery('.boxShotImg', el)[0].outerHTML;
+			var img      = jQuery('.boxShotImg', el);
 			console.log(LOG, 'Video [', randomVideo.title, duration, ']');
 			if (duration.indexOf('minutes') > 0) {
 				var durationInMins = Number(duration.match(/\d+/g)[0]);
 				if (durationInMins > 59) {
-					$('#lucky-flix-popup-title').html(randomVideo.title);
-					$('#lucky-flix-popup-rating').html(rating);
-					$('#lucky-flix-popup-time').html(duration);
-					$('#lucky-flix-popup-year').html(year);
-					$('#lucky-flix-popup-thumbnail').html(img);
-					$('#lucky-flix-popup-button').click(function() {
-						window.location.href = randomVideo.url;
-					});
+					$('#lucky-flix-popup').empty();
+					$('#lucky-flix-popup').append($('<h2>').text(randomVideo.title));
+					$('#lucky-flix-popup').append($('<p>'));
+					$('#lucky-flix-popup').append($('<img>', {src: img.attr('src')}));
+					$('#lucky-flix-popup').append($('<div>', {id: 'lucky-flix-data-container', style: 'display: block;'}));
+					$('#lucky-flix-data-container').append($('<span>').text(duration));
+					$('#lucky-flix-data-container').append('    ');
+					$('#lucky-flix-data-container').append($('<span>').text(rating));
+					$('#lucky-flix-data-container').append('    ');
+					$('#lucky-flix-data-container').append($('<span>').text(year));
+					$('#lucky-flix-popup').append($('<div>', {id: 'lucky-flix-btn-container', style: 'display: block;'}));
+					$('#lucky-flix-btn-container').append($('<a>', {href:'#'}).text('Watch It Now').addClass('lucky-flix-btn').click(function(){
+						window.location.href = randomVideo.url;					
+					}));
 					$('#lucky-flix-popup').popup('show');
 				} else {
 					getRandomVideo();
@@ -105,33 +111,30 @@ var getRandomVideo = function() {
 // Add Get Lucky button to global-header //
 ///////////////////////////////////////////
 
-var html = '';
-html += '<li id="luck-flix" class="nav-item-large nav-item">';
-html += '<span class="i-b content">';
-html += '<a href="#" id="getLuckyBtn"><span class="icon-star"></span> Get Lucky</a>';
-html += '</span>';
-html += '<span class="i-b shim"></span>';
-html += '<span class="down-arrow"></span>';
-html += '<span class="down-arrow-shadow"></span>';
-html += '</li>';
+// var html = '';
+// html += '<li id="luck-flix" class="nav-item-large nav-item">';
+// html += '<span class="i-b content">';
+// html += '<a href="#" id="getLuckyBtn"><span class="icon-star"></span> Get Lucky</a>';
+// html += '</span>';
+// html += '<span class="i-b shim"></span>';
+// html += '<span class="down-arrow"></span>';
+// html += '<span class="down-arrow-shadow"></span>';
+// html += '</li>';
 
-jQuery('#global-header').append(html);
+// jQuery('#global-header').append(html);
+
+jQuery('#global-header').append($('<li>', {id:'lucky-flix'}).addClass('nav-item-large nav-item'));
+jQuery('li#lucky-flix').append($('<span>').addClass('i-b content'));
+jQuery('li#lucky-flix span').append($('<a>', {href: '#', id: 'getLuckyBtn'}).text('Get Lucky'));
+jQuery('li#lucky-flix').append($('<span>').addClass('i-b shim'));
+jQuery('li#lucky-flix').append($('<span>').addClass('down-arrow'));
+jQuery('li#lucky-flix').append($('<span>').addClass('down-arrow-shadow'));
 
 console.log(LOG, 'button added.');
 
-var modal = '';
-modal += '<div id="lucky-flix-popup">';
-modal += '<h2 id="lucky-flix-popup-title">' + 'MovieTitle' + '</h4>';
-modal += '<p id="lucky-flix-popup-thumbnail"></p>';
-modal += '<p>';
-modal += '<span id="lucky-flix-popup-year">' + '1900' + '</span>';
-modal += '    ';
-modal += '<span id="lucky-flix-popup-rating">' + '13' + '</span>';
-modal += '    ';
-modal += '<span id="lucky-flix-popup-time">' + '-500 minutes' + '</span>';
-modal += '</p>';
-modal += '<button id="lucky-flix-popup-button" style="width:100%; height: 50px">Watch It</button>';
-jQuery('body').append(modal);
+jQuery('body').append($('<div>', {id: 'lucky-flix-popup'}));
+jQuery('body').append($('<style>').text('.lucky-flix-btn { display:inline-block; padding: 10px !important; margin: 10px !important; background: #3498db; font-family: arial,sans-serif; color: #ffffff; font-size: 20px; text-decoration: none; } .lucky-flix-btn:hover { text-decoration: none; background: #3cb0fd; }'));
+
 
 $('#lucky-flix-popup').popup();
 $('#lucky-flix-popup')
